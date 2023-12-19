@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".RegisterFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="40dp">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="REGISTER"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:textSize="30dp"
+            android:textColor="#FFC453"
+            >
+        </TextView>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/addUname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            android:paddingStart="40dp"
+            android:padding="13dp"
+            android:background="@drawable/bg"
+            android:layout_below="@+id/title"
+            android:layout_marginTop="40dp"/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/addEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email"
+            android:paddingStart="40dp"
+            android:padding="13dp"
+            android:background="@drawable/bg"
+            android:layout_below="@id/addUname"
+            android:layout_marginTop="30dp"/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/addPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:paddingStart="40dp"
+            android:padding="13dp"
+            android:background="@drawable/bg"
+            android:layout_below="@id/addEmail"
+            android:layout_marginTop="30dp"
+            android:inputType="textPassword"/>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/confirmPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:paddingStart="40dp"
+            android:padding="13dp"
+            android:background="@drawable/bg"
+            android:layout_below="@id/addPassword"
+            android:layout_marginTop="30dp"
+            android:inputType="textPassword"/>
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/CheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="By checking the box you agree to our Terms and Conditions"
+            android:textSize="10dp"
+            app:buttonTint="#D1D1D1"
+            android:layout_below="@+id/confirmPassword"
+            android:layout_marginTop="15dp"
+            android:textColor="@color/white">
+        </com.google.android.material.checkbox.MaterialCheckBox>
+
+        <android.widget.Button
+            android:id="@+id/tombolRegistrasi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/CheckBox"
+            android:layout_marginTop="40dp"
+            android:text="Register"
+            android:backgroundTint="#FFC453"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="25dp"
+            android:textStyle="bold">
+        </android.widget.Button>
+
+        <TextView
+            android:id="@+id/haveAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Already Have an Account?"
+            android:layout_below="@+id/tombolRegistrasi"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="60dp"
+            android:textColor="@color/white">
+        </TextView>
+
+        <TextView
+            android:id="@+id/clickableLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log In"
+            android:textColor="#FFC453"
+            android:clickable="true"
+            android:onClick="onTextClick"
+            android:layout_below="@+id/tombolRegistrasi"
+            android:layout_marginTop="20dp"
+            android:layout_toEndOf="@+id/haveAccount"
+            android:layout_marginLeft="5dp"/>
+
+    </RelativeLayout>
+
+</FrameLayout>
