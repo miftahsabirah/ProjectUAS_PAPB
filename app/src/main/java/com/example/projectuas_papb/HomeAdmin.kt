@@ -1,113 +1,138 @@
 package com.example.projectuas_papb
 
-import Upload_Admin
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
-import android.widget.ListView
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.projectuas_papb.databinding.ActivityHomeAdminBinding
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
-class HomeAdmin : AppCompatActivity() {
+class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
     private lateinit var binding: ActivityHomeAdminBinding
-//    private lateinit var listView: ListView
-    private lateinit var adapter: ArrayAdapter<String>
-    private val MovieList: ArrayList<Movie> = ArrayList()
-    private val MovieListLiveData: MutableLiveData<List<Movie>> by lazy {
-        MutableLiveData<List<Movie>>()
-    }
+    private lateinit var itemAdapterMovie: AdminMovieAdapter
+    private lateinit var itemListMovie: ArrayList<MovieAdminData>
+    private lateinit var recyclerViewItem: RecyclerView
+    private lateinit var database: DatabaseReference
+    private lateinit var sharedPreferences: SharedPreferences
+    private val firestore = FirebaseFirestore.getInstance()
+    private val moviesCollection = firestore.collection("Movie")
 
-    @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomeAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Set up the click listener for the "Tambah" button to open the Form activity
+        recyclerViewItem = binding.listMovie
+        recyclerViewItem.setHasFixedSize(true)
+        recyclerViewItem.layoutManager = LinearLayoutManager(this)
+
+        itemListMovie = arrayListOf()
+        itemAdapterMovie = AdminMovieAdapter(itemListMovie, this)
+        recyclerViewItem.adapter = itemAdapterMovie
+
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+
         binding.fabTambah.setOnClickListener {
-            val intent = Intent(this, Upload_Admin::class.java)
+            intent = Intent(this, Upload_Admin::class.java)
             startActivity(intent)
         }
 
-//        listView = findViewById(R.id.listMovie)
-//        adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList())
-//        listView.adapter = adapter
 
-        // Terima data dari intent
-        val complaintData = intent.getSerializableExtra("complaintData") as? Movie
 
-        // Tampilkan data di halaman lain dan tambahkan ke list
-        complaintData?.let {
+        database = FirebaseDatabase.getInstance().getReference("Movie")
 
-            // Add the new complaint to the list
-            MovieList.add(it)
+        moviesCollection.get().addOnSuccessListener { querySnapshots ->
+            val movies = ArrayList<MovieAdminData>()
 
-            // Update the adapter with the new list
-//            updateAdapter()
+            for (doc in querySnapshots) {
+                val movie = doc.toObject(MovieAdminData::class.java)
+                movies.add(movie)
+            }
 
-            // Clear the intent data to avoid duplicates
-            intent.removeExtra("complaintData")
+            itemAdapterMovie.setData(movies)
+            itemAdapterMovie.notifyDataSetChanged()
         }
-        // Observe changes in Firestore and update the list
-        observeComplaints()
+    }
 
-        // Set item click listener for the listView
-//        with(binding) {
-//            listView.setOnItemClickListener { _, _, position, _ ->
-//                val selectedComplaint = MovieList[position]
-//
-//                // Intent untuk membuka ComplaintDetailActivity dengan data complaint yang dipilih
-//                val intent = Intent(this@MainActivity, DetailComplaintActivity::class.java)
-//                intent.putExtra("selectedComplaint", selectedComplaint)
-//                startActivity(intent)
-//            }
-//        }
+    override fun onEditButtonClick(movie: MovieAdminData) {
+        val intent = Intent(this, Edit_Admin::class.java)
+        intent.putExtra("selectedMovie", movie)
+        startActivity(intent)
+    }
+
+    override fun onDeleteButtonClick(movie: MovieAdminData) {
+        // Ambil ID dari item yang akan dihapus
+        val movieId = movie.id
+
+        // Hapus data dari Firestore
+        moviesCollection.document(movieId)
+            .delete()
+            .addOnSuccessListener {
+                // Hapus data dari Storage (hapus gambar jika ada)
+                val imageUrl = movie.image
+                if (imageUrl.isNotEmpty()) {
+                    val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+                    storageReference.delete().addOnSuccessListener {
+                        Log.d("HomeAdmin", "Image deleted successfully")
+                    }.addOnFailureListener {
+                        Log.e("HomeAdmin", "Error deleting image: $it")
+                    }
+                }
+
+                // Hapus item dari daftar dan perbarui RecyclerView
+                itemListMovie.remove(movie)
+                itemAdapterMovie.notifyDataSetChanged()
+
+                Toast.makeText(this, "Movie deleted successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener {
+                Log.e("HomeAdmin", "Error deleting movie: $it")
+                Toast.makeText(this, "Failed to delete movie", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_movie_admin, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_logout -> {
+                // Handle logout
+                FirebaseAuth.getInstance().signOut()
+                saveLoginStatus(false)
+
+                // Start LoginActivity (replace with your login activity class)
+                val intent = Intent(this, LoginRegisterActivity::class.java)
+                startActivity(intent)
+                finish() // Optional: Close the current activity if needed
+                return true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
     }
 
 
 
-//    private fun updateAdapter() {
-//        // Clear the adapter and add all items from the list
-//        adapter.clear()
-//        for (complaint in MovieList) {
-//            val displayText =
-//                "Name    :    ${complaint.title}\nTitle       " +
-//                        ":   ${complaint.desc}\nContent" +
-//                        ":   ${complaint.content}"
-//            adapter.add(displayText)
-//        }
-//    }
-
-
-    private fun observeComplaints() {
-        val firestore = FirebaseFirestore.getInstance()
-        val complaintCollectionRef = firestore.collection("complaints")
-
-        complaintCollectionRef.addSnapshotListener { snapshots, error ->
-            if (error != null) {
-                Log.d("MainActivity", "Error listening for complaint changes: ", error)
-                return@addSnapshotListener
-            }
-
-            // Clear the existing list
-            MovieList.clear()
-
-            snapshots?.forEach { documentSnapshot ->
-                val complaint = documentSnapshot.toObject(Movie::class.java)
-                if (complaint != null) {
-                    MovieList.add(complaint)
-                }
-            }
-
-            // Notify LiveData observer
-            MovieListLiveData.postValue(MovieList)
-
-            // Update the adapter with the new list
-//            updateAdapter()
-        }
+    private fun saveLoginStatus(isLoggedIn: Boolean) {
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isLoggedIn", isLoggedIn)
+        editor.apply()
     }
 }

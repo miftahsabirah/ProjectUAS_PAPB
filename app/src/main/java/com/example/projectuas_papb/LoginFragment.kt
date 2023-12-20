@@ -1,12 +1,11 @@
 package com.example.projectuas_papb
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.projectuas_papb.databinding.FragmentLoginBinding
@@ -46,12 +45,20 @@ class LoginFragment : Fragment() {
                         if (userEmail == "admin@gmail.com") {
                             // If the user is admin
                             Toast.makeText(activity, "Authentication Success.", Toast.LENGTH_SHORT).show()
-                            val adminIntent = Intent(activity, HomeAdmin::class.java)
+
+                            // Set Shared Preference value for admin
+                            setSharedPreference("admin")
+
+                            val adminIntent = Intent(requireContext(), HomeAdmin::class.java)
                             startActivity(adminIntent)
                         } else {
                             // If the user is not admin, navigate to HomeUser
                             Toast.makeText(activity, "Authentication Success.", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(activity, HomeUser::class.java)
+
+                            // Set Shared Preference value for user
+                            setSharedPreference("user")
+
+                            val intent = Intent(requireContext(), UserActivity::class.java)
                             startActivity(intent)
                         }
                     } else {
@@ -67,12 +74,10 @@ class LoginFragment : Fragment() {
         return view
     }
 
-//    override fun onStart() {
-//        super.onStart()
-//
-//        if (firebaseAuth.currentUser != null) {
-//            val intent = Intent(requireContext(), HomeAdmin::class.java)
-//            startActivity(intent)
-//        }
-//    }
+    private fun setSharedPreference(userType: String) {
+        val sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("userType", userType)
+        editor.apply()
+    }
 }

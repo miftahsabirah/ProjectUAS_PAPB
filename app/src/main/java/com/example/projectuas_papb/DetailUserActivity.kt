@@ -3,9 +3,9 @@ package com.example.projectuas_papb
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
-class HomeUser : AppCompatActivity() {
+class DetailUserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home_user)
+        setContentView(R.layout.activity_detail_user)
     }
 }

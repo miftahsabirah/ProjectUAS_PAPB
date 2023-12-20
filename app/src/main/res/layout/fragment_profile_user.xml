@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProfileUserFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="60dp">
+
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profil"
+            android:textSize="32dp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginTop="50dp">
+        </TextView>
+
+        <TextView
+            android:id="@+id/nama"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Miftah Sabirah"
+            android:textSize="20dp"
+            android:layout_below="@+id/title"
+            android:layout_marginTop="40dp"
+            android:layout_centerHorizontal="true">
+        </TextView>
+
+        <TextView
+            android:id="@+id/nomor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="081287828081"
+            android:textSize="20dp"
+            android:layout_below="@+id/nama"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true">
+        </TextView>
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="miftahsabirah@gmail.com"
+            android:textSize="20dp"
+            android:layout_below="@+id/nomor"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true">
+        </TextView>
+
+        <Button
+            android:id="@+id/logoutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/email"
+            android:layout_marginTop="60dp"
+            android:layout_centerHorizontal="true"
+            android:text="Logout">
+        </Button>
+
+    </RelativeLayout>
+
+</FrameLayout>

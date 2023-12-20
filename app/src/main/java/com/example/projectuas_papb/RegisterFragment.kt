@@ -6,7 +6,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
 import com.example.projectuas_papb.databinding.FragmentRegisterBinding
 import com.google.firebase.auth.FirebaseAuth
@@ -54,7 +53,7 @@ class RegisterFragment : Fragment() {
                 if (pass == confirmPass) {
                     firebaseAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            val intent = Intent(requireContext(), HomeAdmin::class.java)
+                            val intent = Intent(requireContext(), UserActivity::class.java)
                             startActivity(intent)
                         } else {
                             Toast.makeText(requireContext(), it.exception.toString(), Toast.LENGTH_SHORT).show()
