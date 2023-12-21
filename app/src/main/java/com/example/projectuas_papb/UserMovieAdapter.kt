@@ -4,14 +4,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.projectuas_papb.MovieItemClickListener
-import com.example.projectuas_papb.R
-import java.util.ArrayList
+import kotlin.collections.ArrayList
 
 class UserMovieAdapter(
     private val movieUserList: ArrayList<MovieAdminData>,
@@ -50,7 +47,7 @@ class UserMovieAdapter(
     }
 
     // New method to set movies data
-    fun updateMovies(movies: List<MovieAdminData>) {
+    fun updateMovies(movies: ArrayList<MovieAdminData>) {
         movieUserList.clear()
         movieUserList.addAll(movies)
         notifyDataSetChanged()

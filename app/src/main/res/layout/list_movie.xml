@@ -74,7 +74,8 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:background="@drawable/baseline_delete_forever_24"
-                        />
+                        android:backgroundTint="#A50000" />
+
 
                 </LinearLayout>
 

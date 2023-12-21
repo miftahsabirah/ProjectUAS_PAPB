@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ArrayAdapter
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -52,7 +53,11 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
             startActivity(intent)
         }
 
-
+        // Logout Button
+        val logoutAdminButton: ImageButton = findViewById(R.id.logoutAdmin)
+        logoutAdminButton.setOnClickListener {
+            logoutUser()
+        }
 
         database = FirebaseDatabase.getInstance().getReference("Movie")
 
@@ -68,6 +73,21 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
             itemAdapterMovie.notifyDataSetChanged()
         }
     }
+
+    private fun logoutUser() {
+        // Ubah nilai userType menjadi "guest" di SharedPreferences
+        val sharedPreferences =
+            getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("userType", "needlogin")
+        editor.apply()
+
+        // Start activity login
+        val intent = Intent(this, LoginRegisterActivity::class.java)
+        startActivity(intent)
+        finish() // Optional: Close the current activity if needed
+    }
+
 
     override fun onEditButtonClick(movie: MovieAdminData) {
         val intent = Intent(this, Edit_Admin::class.java)
@@ -114,21 +134,12 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_logout -> {
-                // Handle logout
-                FirebaseAuth.getInstance().signOut()
-                saveLoginStatus(false)
-
-                // Start LoginActivity (replace with your login activity class)
-                val intent = Intent(this, LoginRegisterActivity::class.java)
-                startActivity(intent)
-                finish() // Optional: Close the current activity if needed
+                logoutUser()
                 return true
             }
             else -> return super.onOptionsItemSelected(item)
         }
     }
-
-
 
     private fun saveLoginStatus(isLoggedIn: Boolean) {
         val editor = sharedPreferences.edit()

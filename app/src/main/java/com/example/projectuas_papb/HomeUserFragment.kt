@@ -1,6 +1,5 @@
 package com.example.projectuas_papb
 
-
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -31,6 +30,7 @@ class HomeUserFragment : Fragment(), MovieItemClickListener {
         binding = FragmentHomeUserBinding.inflate(inflater, container, false)
         return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,6 +63,7 @@ class HomeUserFragment : Fragment(), MovieItemClickListener {
                 Log.e("FirestoreError", "Error getting movies from Firestore", e)
             }
     }
+
 
     override fun onEditButtonClick(movie: MovieAdminData) {
         // Handle edit button click in user mode (if needed)

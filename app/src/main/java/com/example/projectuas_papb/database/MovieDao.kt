@@ -11,8 +11,14 @@ interface MovieDao {
     suspend fun insertMovie(movie: Movie)
 
     @Insert
-    suspend fun insertAll(vararg movies: List<MovieAdminData>)
+    suspend fun insertAll(vararg movies: Movie)
 
     @Query("SELECT * FROM movies")
     suspend fun getAllMovies(): List<MovieAdminData>
+
+
+
+
 }
+
+

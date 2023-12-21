@@ -1,32 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeAdmin"
-    android:orientation="vertical"
     android:layout_gravity="center"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    tools:context=".HomeAdmin">
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:layout_marginTop="20dp"
         android:text="LIST MOVIE "
         android:textAlignment="center"
-        android:layout_marginTop="20dp"
+        android:textColor="#FFC453"
+        android:textSize="25sp"
         android:textStyle="bold"
-        android:textColor="#FFC453"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <!-- ListView untuk Menampilkan Data -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listMovie"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            tools:listitem="@layout/list_movie"
-            />
+    <ImageButton
+        android:id="@+id/logoutAdmin"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/baseline_logout_24"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@null" />
+
+
+    <!-- ListView untuk Menampilkan Data -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listMovie"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        tools:listitem="@layout/list_movie"
+        app:layout_constraintTop_toBottomOf="@id/title"/>
 
 
     <RelativeLayout
@@ -38,14 +52,14 @@
             android:id="@+id/fab_tambah"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|end"
             android:layout_margin="16dp"
             android:src="@drawable/baseline_add_24"
             app:backgroundTint="#FFC453"
-            app:fabSize="normal"/>
+            app:fabSize="normal" />
 
     </RelativeLayout>
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
