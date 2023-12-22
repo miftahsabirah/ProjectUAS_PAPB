@@ -52,4 +52,6 @@ class UserMovieAdapter(
         movieUserList.addAll(movies)
         notifyDataSetChanged()
     }
+
+
 }
