@@ -19,6 +19,8 @@ import com.google.firebase.auth.FirebaseUser
 class RegisterFragment : Fragment() {
 
     private lateinit var binding: FragmentRegisterBinding
+
+    // autentikasi pengguna
     private lateinit var firebaseAuth: FirebaseAuth
 
     override fun onCreateView(
@@ -30,7 +32,10 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding = FragmentRegisterBinding.bind(view)
+
+        // Menginisialisasi Firebase Authentication
         firebaseAuth = FirebaseAuth.getInstance()
 
         binding.tombolRegistrasi.setOnClickListener {
@@ -40,12 +45,16 @@ class RegisterFragment : Fragment() {
 
             if (email.isNotEmpty() && pass.isNotEmpty() && confirmPass.isNotEmpty()) {
                 if (pass == confirmPass) {
+                    // Membuat pengguna baru menggunakan Firebase Authentication
                     firebaseAuth.createUserWithEmailAndPassword(email, pass)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 val user: FirebaseUser? = firebaseAuth.currentUser
+
                                 sendRegistrationToServer(user?.uid ?: "")
+
                                 sendNotification()
+
                                 navigateToUserActivity()
                             } else {
                                 Toast.makeText(
@@ -65,13 +74,12 @@ class RegisterFragment : Fragment() {
     }
 
     private fun sendRegistrationToServer(userId: String) {
-        // Implement code to send user registration data to your server if needed
     }
 
     private fun sendNotification() {
         val notificationManager = context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val channelId = "Your_Channel_Id"
-        val notificationId = 1 // You may use different notification IDs for different notifications
+        val notificationId = 1
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -84,13 +92,12 @@ class RegisterFragment : Fragment() {
 
         val builder = NotificationCompat.Builder(requireContext(), channelId)
             .setSmallIcon(R.drawable.ic_launcher_background)
-            .setContentTitle("Widih! Selamat Bergabung")
+            .setContentTitle("Selamat Bergabung")
             .setContentText("Selamat! Anda telah berhasil bergabung.")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
 
         notificationManager.notify(notificationId, builder.build())
     }
-
 
     private fun navigateToUserActivity() {
         val intent = Intent(requireContext(), UserActivity::class.java)

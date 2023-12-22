@@ -15,25 +15,24 @@ class LoginRegisterActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityLoginRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // Inisialisasi Shared Preferences
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
-        // Cek apakah pengguna sudah login sebagai "user" atau "admin"
+        // mengecek pengguna login sebagai "user" atau "admin"
         val userType = sharedPreferences.getString("userType", "")
 
         if (userType == "user") {
-            // Jika sudah login sebagai "user", langsung intent ke UserActivity
             val intentToUserActivity = Intent(this, UserActivity::class.java)
             startActivity(intentToUserActivity)
-            finish()  // Menutup activity ini agar tidak bisa kembali lagi
+            finish()
         } else if (userType == "admin") {
-            // Jika sudah login sebagai "admin", langsung intent ke HomeAdminActivity
             val intentToHomeAdmin = Intent(this, HomeAdmin::class.java)
             startActivity(intentToHomeAdmin)
-            finish()  // Menutup activity ini agar tidak bisa kembali lagi
+            finish()
         }
 
         with(binding) {

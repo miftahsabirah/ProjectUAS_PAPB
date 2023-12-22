@@ -15,25 +15,24 @@ class DetailUserActivity : AppCompatActivity() {
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Mendapatkan data dari Intent
+        // Get data from Intent
         val title = intent.getStringExtra("title")
         val description = intent.getStringExtra("description")
         val imgId = intent.getStringExtra("imgId")
 
-        // Menampilkan data di tampilan
+
+        // Display data in the layout
         binding.detailTitle.text = title
         binding.detailDesc.text = description
 
-        // Menggunakan Glide untuk memuat dan menampilkan gambar
         Glide.with(this)
             .load(imgId)
-            .skipMemoryCache(true) // Skip caching in memory
-            .diskCacheStrategy(DiskCacheStrategy.NONE) // Skip caching on disk
+            .placeholder(R.drawable.uploadimage) // Placeholder image while loading
+            .error(R.drawable.uploadimage) // Image to display in case of error
             .into(binding.detailImage)
 
-        // Menambahkan listener untuk tombol kembali
         binding.btnBack.setOnClickListener {
-            startActivity(Intent(this, HomeUserFragment::class.java))
+            finish()
         }
     }
 }

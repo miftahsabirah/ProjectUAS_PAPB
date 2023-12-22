@@ -18,6 +18,8 @@ class LoginFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Inisialisasi instance FirebaseAuth
         firebaseAuth = FirebaseAuth.getInstance()
     }
 
@@ -25,7 +27,6 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -39,44 +40,45 @@ class LoginFragment : Fragment() {
             val pass = binding.addPasswordLogin.text.toString()
 
             if (email.isNotEmpty() && pass.isNotEmpty()) {
+                // Melakukan proses login menggunakan FirebaseAuth
                 firebaseAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener {
                     if (it.isSuccessful) {
                         val userEmail = firebaseAuth.currentUser?.email
                         if (userEmail == "admin@gmail.com") {
-                            // If the user is admin
-                            Toast.makeText(activity, "Authentication Success.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, "Autentikasi Berhasil.", Toast.LENGTH_SHORT).show()
 
-                            // Set Shared Preference value for admin
+                            // Set nilai Shared Preference untuk admin
                             setSharedPreference("admin")
 
                             val adminIntent = Intent(requireContext(), HomeAdmin::class.java)
                             startActivity(adminIntent)
                         } else {
-                            // If the user is not admin, navigate to HomeUser
-                            Toast.makeText(activity, "Authentication Success.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(activity, "Autentikasi Berhasil.", Toast.LENGTH_SHORT).show()
 
-                            // Set Shared Preference value for user
+                            // Set nilai Shared Preference untuk pengguna/public
                             setSharedPreference("user")
 
                             val intent = Intent(requireContext(), UserActivity::class.java)
                             startActivity(intent)
                         }
                     } else {
-                        // If sign in fails, display a message to the user.
-                        Toast.makeText(activity, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(activity, "Autentikasi gagal.", Toast.LENGTH_SHORT).show()
                     }
                 }
             } else {
-                Toast.makeText(activity, "Empty Fields Are not Allowed !!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Kolom yang kosong tidak diperbolehkan!!", Toast.LENGTH_SHORT).show()
             }
         }
 
         return view
     }
 
+    // untuk mengatur nilai Shared Preference
     private fun setSharedPreference(userType: String) {
         val sharedPreferences = requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
+
+        // Menyimpan nilai userType ke Shared Preferences
         editor.putString("userType", userType)
         editor.apply()
     }

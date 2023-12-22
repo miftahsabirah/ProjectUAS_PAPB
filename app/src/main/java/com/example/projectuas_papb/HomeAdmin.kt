@@ -35,9 +35,11 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityHomeAdminBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Inisialisasi RecyclerView dan Adapter untuk daftar film
         recyclerViewItem = binding.listMovie
         recyclerViewItem.setHasFixedSize(true)
         recyclerViewItem.layoutManager = LinearLayoutManager(this)
@@ -46,6 +48,7 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
         itemAdapterMovie = AdminMovieAdapter(itemListMovie, this)
         recyclerViewItem.adapter = itemAdapterMovie
 
+        // Inisialisasi SharedPreferences untuk menyimpan status login
         sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
         binding.fabTambah.setOnClickListener {
@@ -53,14 +56,12 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
             startActivity(intent)
         }
 
-        // Logout Button
         val logoutAdminButton: ImageButton = findViewById(R.id.logoutAdmin)
         logoutAdminButton.setOnClickListener {
             logoutUser()
         }
 
-        database = FirebaseDatabase.getInstance().getReference("Movie")
-
+        // Mengambil data film dari Firestore dan menampilkan dalam RecyclerView
         moviesCollection.get().addOnSuccessListener { querySnapshots ->
             val movies = ArrayList<MovieAdminData>()
 
@@ -75,19 +76,15 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
     }
 
     private fun logoutUser() {
-        // Ubah nilai userType menjadi "guest" di SharedPreferences
-        val sharedPreferences =
-            getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
+        // Mengubah nilai userType menjadi "guest" di SharedPreferences
         val editor = sharedPreferences.edit()
         editor.putString("userType", "needlogin")
         editor.apply()
 
-        // Start activity login
         val intent = Intent(this, LoginRegisterActivity::class.java)
         startActivity(intent)
-        finish() // Optional: Close the current activity if needed
+        finish()
     }
-
 
     override fun onEditButtonClick(movie: MovieAdminData) {
         val intent = Intent(this, Edit_Admin::class.java)
@@ -96,14 +93,11 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
     }
 
     override fun onDeleteButtonClick(movie: MovieAdminData) {
-        // Ambil ID dari item yang akan dihapus
         val movieId = movie.id
 
-        // Hapus data dari Firestore
         moviesCollection.document(movieId)
             .delete()
             .addOnSuccessListener {
-                // Hapus data dari Storage (hapus gambar jika ada)
                 val imageUrl = movie.image
                 if (imageUrl.isNotEmpty()) {
                     val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
@@ -114,7 +108,7 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
                     }
                 }
 
-                // Hapus item dari daftar dan perbarui RecyclerView
+                // Menghapus item dari daftar dan memperbarui RecyclerView
                 itemListMovie.remove(movie)
                 itemAdapterMovie.notifyDataSetChanged()
 
@@ -126,11 +120,7 @@ class HomeAdmin : AppCompatActivity(), MovieItemClickListener {
             }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_movie_admin, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
+    // logout action bar
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_logout -> {

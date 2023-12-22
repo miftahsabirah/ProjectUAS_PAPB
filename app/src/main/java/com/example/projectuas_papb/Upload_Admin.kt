@@ -34,26 +34,25 @@ class Upload_Admin : AppCompatActivity() {
         val selectedMovie = intent.getSerializableExtra("selectedMovie") as? MovieAdminData
 
         with(binding) {
-            // Handle image upload button click
             content.setOnClickListener {
                 val Img = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 startActivityForResult(Img, 0)
             }
 
-            // Handle submit button click
             btnAddmovie.setOnClickListener {
                 // Ambil data dari form
                 val title = title.text.toString()
                 val deskripsi = desc.text.toString()
 
                 if (imgPath != null) {
-                    // Generate unique filename using UUID
+                    // Buat nama file unik menggunakan UUID
                     val filename = UUID.randomUUID().toString()
 
-                    // Upload image with unique filename
+                    // Upload gambar dengan nama file unik
                     val imageRef = storageReference.child(filename)
                     imageRef.putFile(imgPath!!)
                         .addOnSuccessListener {
+                            // mendapatkan URL gambar
                             imageRef.downloadUrl.addOnSuccessListener { uri ->
                                 val imageFile = uri.toString()
                                 val movie = MovieAdminData(
@@ -66,11 +65,9 @@ class Upload_Admin : AppCompatActivity() {
                             }
                         }
                         .addOnFailureListener {
-                            // Handle failure
                             Log.d("Upload_Admin", "Error uploading image: ", it)
                         }
                 } else {
-                    // Handle the case where no new image is selected
                     val movie = MovieAdminData(
                         title = title,
                         desc = deskripsi,
@@ -80,14 +77,15 @@ class Upload_Admin : AppCompatActivity() {
                     navigateToAdminHome(movie)
                 }
             }
-
         }
     }
 
+    // Metode untuk menambahkan data film baru ke Firestore
     private fun addMovie(movie: MovieAdminData) {
-        // Add the movie to Firestore
+        // Tambahkan data film ke Firestore
         movieCollection.add(movie)
             .addOnSuccessListener { documentReference ->
+                // Jika penambahan film berhasil, dapatkan ID film yang baru dibuat
                 val createdMovieId = documentReference.id
                 movie.id = createdMovieId
                 documentReference.set(movie)
@@ -101,7 +99,6 @@ class Upload_Admin : AppCompatActivity() {
     }
 
     private fun navigateToAdminHome(movie: MovieAdminData) {
-        // Navigate back to AdminHome and pass the new movie data
         val intent = Intent(this@Upload_Admin, HomeAdmin::class.java)
         intent.putExtra("movieData", movie)
         startActivity(intent)
@@ -109,8 +106,10 @@ class Upload_Admin : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        // menangani hasil pemilihan gambar dari galeri
         if (resultCode == Activity.RESULT_OK) {
             imgPath = data?.data
+            // Tampilkan gambar yang dipilih menggunakan Glide
             Glide.with(this).load(imgPath).into(binding.content)
         }
     }

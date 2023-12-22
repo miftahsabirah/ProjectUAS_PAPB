@@ -9,14 +9,17 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [MovieEntity::class], version = 1, exportSchema = false)
 abstract class MovieRoomDatabase : RoomDatabase() {
+    // akses ke DAO untuk melakukan operasi database
     abstract fun movieDao(): MovieDao
 
     companion object {
         @Volatile
-        private var INSTANCE: MovieRoomDatabase? = null 
+        private var INSTANCE: MovieRoomDatabase? = null
 
+        // Fungsi getDatabase untuk mendapatkan instance database Room.
         fun getDatabase(context: Context): MovieRoomDatabase? {
             if (INSTANCE == null){
+                // memastikan bahwa hanya satu thread yang dapat membuat instance database
                 synchronized(MovieRoomDatabase::class.java){
                     INSTANCE = databaseBuilder(
                         context.applicationContext,
@@ -26,35 +29,7 @@ abstract class MovieRoomDatabase : RoomDatabase() {
                 }
             }
             return INSTANCE
-//            return INSTANCE ?: synchronized(this) {
-//                val instance = Room.databaseBuilder(
-//                    context.applicationContext,
-//                    MovieRoomDatabase::class.java,
-//                    "movie_database"
-//                ).build()
-//                INSTANCE = instance
-//                instance
 
         }
     }
 }
-
-
-
-//
-//    companion object {
-//        @Volatile
-//        private var INSTANCE: MovieRoomDatabase? = null
-//
-//        fun getDatabase(context: Context): MovieRoomDatabase {
-//            return INSTANCE ?: synchronized(this) {
-//                val instance = Room.databaseBuilder(
-//                    context.applicationContext,
-//                    MovieRoomDatabase::class.java,
-//                    "movie_database"
-//                ).build()
-//                INSTANCE = instance
-//                instance
-//            }
-//        }
-//    }

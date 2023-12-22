@@ -10,11 +10,10 @@ interface MovieDao {
     suspend fun insertMovie(movie: MovieEntity)
 
     @Insert
-     fun insertAllMovies(movies: List<MovieEntity>)
+    fun insertAllMovies(movies: List<MovieEntity>)
 
-     @Query("DELETE FROM movies")
-     suspend fun deleteAllMovies()
-
+    @Query("DELETE FROM movies")
+    suspend fun deleteAllMovies()
 
     @Query("SELECT * FROM movies")
     suspend fun getAllMovies(): List<MovieEntity>

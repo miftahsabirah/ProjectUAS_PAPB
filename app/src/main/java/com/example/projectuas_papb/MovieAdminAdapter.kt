@@ -15,41 +15,43 @@ import com.bumptech.glide.Glide
 interface MovieItemClickListener {
     fun onEditButtonClick(movie: MovieAdminData)
     fun onDeleteButtonClick(movie: MovieAdminData)
+    fun onItemClick(currentItem: MovieAdminData) {
+
+    }
 }
 
 
 class AdminMovieAdapter(
-
-//
     private val MovieAdmin: ArrayList<MovieAdminData>,
     private val clickListener: MovieItemClickListener
-):
-    RecyclerView.Adapter<AdminMovieAdapter.MovieAdminViewHolder>()
-{
+) : RecyclerView.Adapter<AdminMovieAdapter.MovieAdminViewHolder>() {
 
+    // ViewHolder untuk menyimpan referensi elemen UI dari item tampilan
     class MovieAdminViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val title: TextView = itemView.findViewById(R.id.title)
         val description: TextView = itemView.findViewById(R.id.desc)
         val image: ImageView = itemView.findViewById(R.id.content)
-        val buttonEdit : Button = itemView.findViewById(R.id.buttonEdit)
-        val buttonHapus : Button = itemView.findViewById(R.id.buttonHapus)
+        val buttonEdit: Button = itemView.findViewById(R.id.buttonEdit)
+        val buttonHapus: Button = itemView.findViewById(R.id.buttonHapus)
     }
 
-
+    // Metode yang dipanggil ketika RecyclerView perlu menggambar tampilan item
     override fun onBindViewHolder(holder: MovieAdminViewHolder, position: Int) {
         val currentItem = MovieAdmin[position]
-        currentItem.image?.let { Log.d("ImageURL", it) }
-        holder.title.setText(currentItem.title)
-        holder.description.setText(currentItem.desc)
 
-        // Use Glide or Picasso to load the image from the URL into the ImageView
+        // Menampilkan informasi dari item saat ini ke elemen UI di ViewHolder
 
+        // Set judul (title) dari MovieAdminData ke TextView
+        holder.title.text = currentItem.title
+
+        // Set deskripsi (description) dari MovieAdminData ke TextView
+        holder.description.text = currentItem.desc
+
+        // Menggunakan Glide untuk memuat dan menampilkan gambar dari URL ke ImageView
         Glide.with(holder.itemView.context)
             .load(currentItem.image)
             .into(holder.image)
 
-
-        // Set click listeners for buttons
         holder.buttonEdit.setOnClickListener {
             clickListener.onEditButtonClick(currentItem)
         }
@@ -59,40 +61,22 @@ class AdminMovieAdapter(
         }
     }
 
+    // saat RecyclerView perlu membuat ViewHolder baru
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieAdminViewHolder {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.list_movie, parent, false)
         return MovieAdminViewHolder(itemView)
     }
 
+    // mengembalikan jumlah item dalam daftar
     override fun getItemCount(): Int {
         return MovieAdmin.size
     }
 
-
-//        private fun deleteItemFromDatabase(imgId: String) {
-//            // Reference to the Firebase Storage
-//            val storageReference = FirebaseStorage.getInstance().getReference("images").child(imgId)
-//
-//            // Delete the image from Firebase Storage
-//            storageReference.delete().addOnSuccessListener {
-//                // Image deleted successfully, now delete the corresponding data from the Realtime Database
-//                val database = FirebaseDatabase.getInstance().getReference("Film")
-//                database.child(imgId).removeValue()
-//                    .addOnCompleteListener {
-//                        // Handle success if needed
-//                    }
-//                    .addOnFailureListener {
-//                        // Handle failure if needed
-//                    }
-//            }.addOnFailureListener {
-//                // Handle failure if the image deletion fails
-//            }
-//        }
-
-    fun setData(dataMovie: List<MovieAdminData>){
+    // mengganti data set pada adapter dengan data baru
+    fun setData(dataMovie: List<MovieAdminData>) {
+        // Membersihkan dataMovie yang ada dan menambahkan semua dataMovie baru
         MovieAdmin.clear()
         MovieAdmin.addAll(dataMovie)
     }
-
 }

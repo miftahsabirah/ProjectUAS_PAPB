@@ -26,32 +26,29 @@ class Edit_Admin : AppCompatActivity() {
         // Ambil data yang dikirim dari HomeAdmin
         movie = intent.getSerializableExtra("selectedMovie") as MovieAdminData
 
-        // Tampilkan informasi saat ini pada UI
+        //menampilkan di ui
         binding.edtTitle.setText(movie.title)
         binding.edtDesc.setText(movie.desc)
 
-        // Tampilkan gambar saat ini dengan Glide (jika ada)
         if (movie.image.isNotEmpty()) {
             Glide.with(this).load(movie.image).into(binding.edtContent)
         }
 
-        // Tombol untuk memilih gambar
+
         binding.uploadButton.setOnClickListener {
             val imageIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(imageIntent, 1)
         }
 
-        // Tombol untuk menyimpan perubahan
+
         binding.btnEdtmovie.setOnClickListener {
             val newTitle = binding.edtTitle.text.toString()
             val newDesc = binding.edtDesc.text.toString()
 
-            // Simpan perubahan ke Firestore
             movie.title = newTitle
             movie.desc = newDesc
 
             if (imgPath != null) {
-                // Jika ada gambar baru, upload dan simpan URL
                 storageReference.putFile(imgPath!!)
                     .addOnSuccessListener {
                         storageReference.downloadUrl.addOnSuccessListener {
@@ -61,13 +58,12 @@ class Edit_Admin : AppCompatActivity() {
                         }
                     }
             } else {
-                // Jika tidak ada gambar baru, langsung update data
                 updateMovieData(movie)
             }
         }
     }
 
-    // Metode untuk menangani hasil pemilihan gambar
+    // menangani hasil pemilihan gambar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == RESULT_OK && data != null) {
@@ -76,22 +72,19 @@ class Edit_Admin : AppCompatActivity() {
         }
     }
 
-    // Metode untuk mengupdate data pada Firestore
+    // update data pada Firestore
     private fun updateMovieData(movie: MovieAdminData) {
         firestore.collection("Movie")
             .document(movie.id)
             .set(movie)
             .addOnSuccessListener {
-                // Jika penyimpanan ke Firestore berhasil
                 Toast.makeText(this, "Changes saved successfully", Toast.LENGTH_SHORT).show()
 
-                // Kembali ke halaman HomeAdmin
                 val intent = Intent(this@Edit_Admin, HomeAdmin::class.java)
                 startActivity(intent)
-                finish() // Optional: Sebaiknya tambahkan finish() jika Anda tidak ingin kembali lagi ke halaman Edit_Admin dari stack activity.
+                finish()
             }
             .addOnFailureListener {
-                // Jika ada kesalahan saat menyimpan
                 Toast.makeText(this, "Failed to save changes", Toast.LENGTH_SHORT).show()
             }
     }

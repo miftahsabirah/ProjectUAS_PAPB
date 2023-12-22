@@ -13,13 +13,14 @@ import androidx.fragment.app.Fragment
 import com.example.projectuas_papb.databinding.FragmentProfileUserBinding
 
 class ProfileUserFragment : Fragment() {
-    // TODO: Rename and change types of parameters
+
     private lateinit var binding: FragmentProfileUserBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
 
+        arguments?.let {
+            // TODO: Handle arguments if needed
         }
     }
 
@@ -36,20 +37,19 @@ class ProfileUserFragment : Fragment() {
 
         with(binding) {
             logoutButton.setOnClickListener {
-                // Ubah nilai userType menjadi "guest" di SharedPreferences
+                // mengubah userType menjadi "needlogin"
                 val sharedPreferences =
                     requireActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
                 editor.putString("userType", "needlogin")
                 editor.apply()
 
-                // Start activity login
                 val intent = Intent(requireContext(), LoginRegisterActivity::class.java)
                 startActivity(intent)
+
                 requireActivity().finish()
             }
         }
-
-
     }
 }
+
